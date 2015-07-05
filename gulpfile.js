@@ -1,18 +1,25 @@
-var gulp = require('gulp');
+var gulp       = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');
-var connect = require('gulp-connect');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var watchify = require('watchify');
+var connect    = require('gulp-connect');
+var source     = require('vinyl-source-stream');
+var buffer     = require('vinyl-buffer');
+var watchify   = require('watchify');
 var browserify = require('browserify');
-var babelify = require('babelify');
-var rename = require('gulp-rename')
-var _ = require('lodash');
-var util = require('gulp-util');
-var colors = util.colors;
+var babelify   = require('babelify');
+var rename     = require('gulp-rename')
+var _          = require('lodash');
+var util       = require('gulp-util');
+var colors     = util.colors;
 
-var bundleFilename = 'bundle.js';
+var BUNDLE_FILENAME = 'bundle.js';
 
+// default to running dev server and building on changes
+gulp.task('default', ['server', 'watch']);
+
+// build all of the things
+gulp.task('build', ['build-html', 'build-css', 'build-js']);
+
+// start livereload dev server
 gulp.task('server', function() {
   connect.server({
     root: 'public',
@@ -20,80 +27,74 @@ gulp.task('server', function() {
   });
 });
 
-gulp.task('build', ['build-html', 'build-css', 'build-js']);
-
+// copy html to public folder
 gulp.task('build-html', function() {
   gulp.src('./src/*.html')
       .pipe(gulp.dest('public'))
       .pipe(connect.reload());
 });
 
+// copy css to public folder
 gulp.task('build-css', function() {
   gulp.src('./src/*.css')
       .pipe(gulp.dest('public'))
       .pipe(connect.reload());
 });
 
+// transpile es6, import browserify modules and copy to public
 gulp.task('build-js', function() {
-  bundle();
+  setupBrowserify(false);
 });
 
-
+// watch filesystem for changes and build app
 gulp.task('watch', ['build'], function() {
-  bundle(true);
+  setupBrowserify(true);
   gulp.watch(['./src/*.html'], ['build-html']);
   gulp.watch(['./src/*.css'], ['build-css']);
 });
 
-gulp.task('default', ['server', 'watch']);
 
-function reload() {
-  connect.reload()();
-}
-
-function bundle(watch) {
-  var bro;
+function setupBrowserify(watch) {
+  var bundler;
 
   if (watch) {
-    bro = watchify(browserify('src/app.js',
-      // Assigning debug to have sourcemaps
-      _.assign(watchify.args, {
-        debug: true
-      })));
+    bundler = watchify(
+      browserify('src/app.js',
+      _.assign(watchify.args, { debug: true }))
+    );
 
-    bro.on('update', function(modifiedFiles) {
-      modifiedFiles.forEach(function(file) {
-        util.log(colors.cyan('File modified:'), colors.magenta(file), '- updating', bundleFilename);
-      });
-
-      rebundle(bro);
+    bundler.on('update', function(modifiedFiles) {
+      modifiedFiles.forEach(logFileUpdate);
+      rebundle(bundler);
     });
   } else {
-    bro = browserify('src/app.js', {
+    bundler = browserify('src/app.js', {
       debug: true
     });
   }
 
-  bro.transform(babelify.configure({
+  bundler.transform(babelify.configure({
     compact: false
   }));
 
-  function rebundle(bundler) {
-    return bundler.bundle()
-      .on('error', function(e) {
-        util.log(colors.red('Browserify error'));
-        util.log(colors.red(e.message));
-      })
-      .pipe(source('app.js'))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({
-        loadMaps: true
-      })) // loads map from browserify file
-      .pipe(sourcemaps.write()) // writes .map file
-      .pipe(rename(bundleFilename))
-      .pipe(gulp.dest('public'))
-      .pipe(connect.reload());
-  }
+  return rebundle(bundler);
+}
 
-  return rebundle(bro);
+function rebundle(bundler) {
+  return bundler.bundle()
+    .on('error', function(e) {
+      util.log(colors.red('Browserify error'));
+      util.log(colors.red(e.message));
+    })
+    .pipe(source('app.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true })) // loads map from browserify file
+    .pipe(sourcemaps.write()) // writes .map file
+    .pipe(rename(BUNDLE_FILENAME))
+    .pipe(gulp.dest('public'))
+    .pipe(connect.reload());
+}
+
+function logFileUpdate(file) {
+  util.log(colors.cyan('File modified:'), colors.magenta(file), '- updating', BUNDLE_FILENAME);
 }
