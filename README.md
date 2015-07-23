@@ -8,13 +8,15 @@ Explorations in making a Slack clone with React + Express + Rethinkdb
 
 - NodeJS
 - Gulp
+- Bower
 - Rethinkdb (not yet...)
 
 ```bash
 git clone git@github.com/catkins/chatterbox.git
 cd colour-box
-npm install -g gulp
+npm install -g gulp bower
 npm install
+bower install
 ```
 
 ### Building
