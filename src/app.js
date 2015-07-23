@@ -1,30 +1,21 @@
-import $ from 'jquery';
-import ColourBox from './colour-box';
+import {
+  run,
+  Route,
+  HashLocation
+} from 'react-router';
 
-const box = new ColourBox(document.getElementById('box'));
+import React     from 'react';
 
-box.on('mousemove', (event) => {
-  const { x, y }      = box.extractMouseCoordinates(event);
-  const newBackground = calculateStyle(x, y);
+import App       from './components/app';
+import Room      from './components/room';
+import chatrooms from './stores/chatroom-store';
 
-  box.updateBackgroundColour(newBackground);
-  updateCoordinates(x, y);
+const routes = (
+  <Route handler={App} path="/">
+    <Route path=":room" name="room" handler={Room} />
+  </Route>
+);
+
+run(routes, HashLocation, (Root) => {
+  React.render(<Root/>, document.body);
 });
-
-box.updateBackgroundColour(randomColour())
-
-function calculateStyle(x, y) {
-  const hue        = Math.floor(x * 360);
-  const saturation = Math.floor(100 - y * 100);
-
-  return `hsl(${hue}, ${saturation}%, 70%)`;
-}
-
-function updateCoordinates(x, y) {
-  $('.coordinates').text(`x: ${x}, y: ${y}`);
-}
-
-function randomColour() {
-  return calculateStyle(Math.random(), Math.random());
-}
-
