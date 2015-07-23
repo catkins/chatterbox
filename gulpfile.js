@@ -6,9 +6,11 @@ var buffer     = require('vinyl-buffer');
 var watchify   = require('watchify');
 var browserify = require('browserify');
 var babelify   = require('babelify');
+var sass       = require('gulp-sass');
 var rename     = require('gulp-rename')
 var _          = require('lodash');
 var util       = require('gulp-util');
+var debug      = require('gulp-debug');
 var colors     = util.colors;
 
 var BUNDLE_FILENAME = 'bundle.js';
@@ -30,13 +32,22 @@ gulp.task('server', function() {
 // copy html to public folder
 gulp.task('build-html', function() {
   gulp.src('./src/*.html')
+      .pipe(debug({ title: 'html' }))
       .pipe(gulp.dest('public'))
       .pipe(connect.reload());
 });
 
-// copy css to public folder
+// compile sass and copy to public folder
 gulp.task('build-css', function() {
-  gulp.src('./src/*.css')
+  gulp.src('./styles/*.scss')
+      .pipe(debug({ title: 'css' }))
+      .pipe(sass({
+          includePaths: [
+            './bower_components/foundation/scss'
+          ]
+        })
+        .on('error', sass.logError)
+      )
       .pipe(gulp.dest('public'))
       .pipe(connect.reload());
 });
@@ -49,8 +60,8 @@ gulp.task('build-js', function() {
 // watch filesystem for changes and build app
 gulp.task('watch', ['build'], function() {
   setupBrowserify(true);
-  gulp.watch(['./src/*.html'], ['build-html']);
-  gulp.watch(['./src/*.css'], ['build-css']);
+  gulp.watch(['./src/*.html'],    ['build-html']);
+  gulp.watch(['./styles/*.scss'], ['build-css']);
 });
 
 
