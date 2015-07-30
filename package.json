@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "repository": "git@github.com:catkins/chatterbox.git",
   "dependencies": {
     "jquery": "^2.1.4",
     "lodash": "^3.10.0",
