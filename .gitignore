@@ -87,3 +87,6 @@ sftp-config.json
 
 # Linux trash folder which might appear on any partition or disk
 .Trash-*
+
+# Ignore local rethinkdb data
+rethinkdb_data
