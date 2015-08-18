@@ -30,6 +30,18 @@ class Sidebar extends Component {
     return RoomStore.getAllRooms();
   }
 
+  componentDidMount() {
+    RoomStore.on('change', this._roomsChanged)
+  }
+
+  componentWillUnmount() {
+    RoomStore.removeListener('change', this._roomsChanged)
+  }
+
+  _roomsChanged = () => {
+    this.forceUpdate();
+  }
+
 }
 
 export default Sidebar;
