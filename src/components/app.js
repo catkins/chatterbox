@@ -3,7 +3,6 @@ import { RouteHandler } from 'react-router';
 import Header           from './header';
 import Footer           from './footer';
 import Sidebar          from './sidebar';
-import chatrooms        from '../stores/chatroom-store';
 
 const { Component } = React;
 
@@ -13,15 +12,12 @@ class App extends Component {
     return (
       <div>
         <Header />
-
         <div className="row">
-          <Sidebar chatrooms={chatrooms}/>
-
+          <Sidebar/>
           <div className="large-9 columns">
             <RouteHandler/>
           </div>
         </div>
-
         <Footer />
       </div>
     );

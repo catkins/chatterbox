@@ -1,27 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router';
+import RoomStore from '../stores/room-store';
 
 const { Component } = React;
 
 class Sidebar extends Component {
 
   render() {
-    const chatrooms = this.props.chatrooms;
-    const links = chatrooms.map((room) =>
+    return (
+      <aside className="large-3 columns">
+        <ul className="side-nav">
+          {this.renderLinks()}
+        </ul>
+      </aside>
+    );
+  }
+
+  renderLinks() {
+    return this.getRooms().map((room) =>
       <li key={room.name}>
         <Link to="room" params={{room: room.name}}>
           #{room.name}
         </Link>
       </li>
     );
+  }
 
-    return (
-      <aside className="large-3 columns">
-        <ul className="side-nav">
-          {links}
-        </ul>
-      </aside>
-    );
+  getRooms() {
+    return RoomStore.getAllRooms();
   }
 
 }

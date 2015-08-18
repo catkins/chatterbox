@@ -8,7 +8,6 @@ import React     from 'react';
 
 import App       from './components/app';
 import Room      from './components/room';
-import chatrooms from './stores/chatroom-store';
 
 const routes = (
   <Route handler={App} path="/">
