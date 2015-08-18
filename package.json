@@ -5,11 +5,12 @@
   "main": "index.js",
   "repository": "git@github.com:catkins/chatterbox.git",
   "dependencies": {
+    "express": "^4.13.1",
+    "flux": "^2.1.1",
     "jquery": "^2.1.4",
     "lodash": "^3.10.0",
     "react": "^0.13.3",
     "react-router": "^0.13.3",
-    "express": "^4.13.1",
     "rethinkdb": "^2.0.2"
   },
   "devDependencies": {
