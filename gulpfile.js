@@ -85,7 +85,8 @@ function setupBrowserify(watch) {
   }
 
   bundler.transform(babelify.configure({
-    compact: false
+    compact: false,
+    optional: ["es7.classProperties"]
   }));
 
   return rebundle(bundler);
