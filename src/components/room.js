@@ -1,5 +1,6 @@
 import React         from 'react';
 import MessageStore  from '../stores/message-store';
+import UserStore     from '../stores/user-store';
 import AppDispatcher from '../dispatcher/app-dispatcher';
 
 const { Component } = React
@@ -41,20 +42,28 @@ class Room extends Component {
 
     let messages = MessageStore.getMessagesForRoom(roomId);
 
-    return messages.map((msg, index) =>
-      (<li key={index}>@{msg.from}: {msg.text}</li>)
-    );
+    return messages.map((msg, index) => this._renderMessage(msg, index));
+  }
+
+  _renderMessage(msg, index) {
+    let user = UserStore.findById(msg.userId);
+
+    return <li key={index}>@{user.handle}: {msg.text}</li>;
   }
 
   _renderNewMessageBox() {
     return (
       <div className="row collapse">
+
         <div className="small large-10 columns">
           <input type="text" value={this.state.newMessage} onChange={this._newMessageChanged} />
         </div>
+
         <div className="small large-2 columns">
-          <button className="button postfix" onClick={this._sendMessage}>Send</button>
-          </div>
+          <button className="button postfix" disabled={!this.state.newMessage} onClick={this._sendMessage}>
+            Send
+          </button>
+        </div>
       </div>
     );
   }

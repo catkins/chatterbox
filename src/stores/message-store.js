@@ -1,22 +1,23 @@
 import AppDispatcher from '../dispatcher/app-dispatcher'
 import { EventEmitter } from 'events';
+import UserStore from './user-store';
 
 // dummy data for prototype
 const _messages = {
   general: [
     {
-      from: 'gary',
+      userId: 1,
       text: 'Hey mate'
     },
     {
-      from: 'tony',
+      userId: 2,
       text: 'Nick off!'
     }
   ],
 
   random: [
     {
-      from: 'murray',
+      userId: 3,
       text: 'Oi paloi'
     }
   ]
@@ -40,9 +41,8 @@ class MessageStore extends EventEmitter {
       switch(payload.eventName) {
         case 'create-message':
           let { room, text } = payload.data;
-          let user = 'gary';
-
-          this.createMessage(room, text, user);
+          let userId = UserStore.getCurrentUser().id;
+          this.createMessage(room, text, userId);
           break;
 
         default:
@@ -53,12 +53,12 @@ class MessageStore extends EventEmitter {
     });
   }
 
-  createMessage(room, text, user) {
+  createMessage(room, text, userId) {
     this.messages[room] = this.messages[room] || [];
 
     this.messages[room].push({
-      from: user,
-      text: text
+      userId: userId,
+      text:   text
     });
 
     this.emit('change');
