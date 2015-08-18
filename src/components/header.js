@@ -1,6 +1,9 @@
 import React from 'react';
 
-const Header = React.createClass({
+const { Component } = React;
+
+class Header extends Component {
+
   render() {
     return (
       <nav className="top-bar">
@@ -12,6 +15,7 @@ const Header = React.createClass({
       </nav>
     );
   }
-});
+
+};
 
 export default Header;

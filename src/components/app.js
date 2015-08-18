@@ -5,7 +5,10 @@ import Footer           from './footer';
 import Sidebar          from './sidebar';
 import chatrooms        from '../stores/chatroom-store';
 
-const App = React.createClass({
+const { Component } = React;
+
+class App extends Component {
+
   render() {
     return (
       <div>
@@ -23,6 +26,7 @@ const App = React.createClass({
       </div>
     );
   }
-});
+
+};
 
 export default App;

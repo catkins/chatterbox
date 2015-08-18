@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-const Sidebar = React.createClass({
+const { Component } = React;
+
+class Sidebar extends Component {
+
   render() {
     const chatrooms = this.props.chatrooms;
     const links = chatrooms.map((room) =>
@@ -20,6 +23,7 @@ const Sidebar = React.createClass({
       </aside>
     );
   }
-});
+
+}
 
 export default Sidebar;
