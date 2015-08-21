@@ -11,6 +11,8 @@ var rename     = require('gulp-rename')
 var _          = require('lodash');
 var util       = require('gulp-util');
 var debug      = require('gulp-debug');
+var eslint     = require('gulp-eslint');
+var friendlyFormatter = require("eslint-friendly-formatter");
 var colors     = util.colors;
 
 var BUNDLE_FILENAME = 'bundle.js';
@@ -19,7 +21,7 @@ var BUNDLE_FILENAME = 'bundle.js';
 gulp.task('default', ['server', 'watch']);
 
 // build all of the things
-gulp.task('build', ['build-html', 'build-css', 'build-js']);
+gulp.task('build', ['build-html', 'build-css', 'build-js', 'lint']);
 
 // start livereload dev server
 gulp.task('server', function() {
@@ -57,9 +59,16 @@ gulp.task('build-js', function() {
   setupBrowserify(false);
 });
 
+gulp.task('lint', function () {
+    return gulp.src(['src/**/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format(friendlyFormatter));
+});
+
 // watch filesystem for changes and build app
 gulp.task('watch', ['build'], function() {
   setupBrowserify(true);
+  gulp.watch(['./src/**/*.js'],   ['lint']);
   gulp.watch(['./src/*.html'],    ['build-html']);
   gulp.watch(['./styles/*.scss'], ['build-css']);
 });
@@ -86,7 +95,7 @@ function setupBrowserify(watch) {
 
   bundler.transform(babelify.configure({
     compact: false,
-    optional: ["es7.classProperties"]
+    optional: ["es7.functionBind", "es7.classProperties"]
   }));
 
   return rebundle(bundler);
