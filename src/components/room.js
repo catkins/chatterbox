@@ -1,9 +1,10 @@
-import React         from 'react';
-import MessageStore  from '../stores/message-store';
-import UserStore     from '../stores/user-store';
-import MessageBox    from './message-box';
+import React        from 'react';
+import MessageStore from '../stores/message-store';
+import UserStore    from '../stores/user-store';
+import MessageBox   from './message-box';
+import MessageList  from './message-list';
 
-const { Component } = React;
+const { Component, PropTypes } = React;
 
 class Room extends Component {
 
@@ -20,32 +21,26 @@ class Room extends Component {
   }
 
   render() {
-    const messages = this._renderMessages();
+    const messages = this._getMessages();
 
     return (
       <div className="room">
         <h4>{messages.length} message{messages.length === 1 ? '' : 's' }</h4>
 
-        <ul className="messages">
-          {this._renderMessages()}
-        </ul>
+        <MessageList messages={messages} />
         <MessageBox roomName={this.props.params.room} />
       </div>
     );
   }
 
-  _renderMessages() {
+  _getMessages() {
     const roomId = this.props.params.room;
 
-    const messages = MessageStore.getMessagesForRoom(roomId);
+    return MessageStore.getMessagesForRoom(roomId).map((msg) => {
+      const user = UserStore.findById(msg.userId);
 
-    return messages.map((msg, index) => this._renderMessage(msg, index));
-  }
-
-  _renderMessage(msg, index) {
-    const user = UserStore.findById(msg.userId);
-
-    return <li className="message" key={index}>@{user.handle}: {msg.text}</li>;
+      return { text: msg.text, handle: `@${user.handle}` };
+    });
   }
 
   _messagesChanged() {
