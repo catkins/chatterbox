@@ -6,14 +6,16 @@ const { Component } = React;
 
 class Sidebar extends Component {
 
-  render() {
-    return (
-      <aside className="large-3 columns">
-        <ul className="side-nav">
-          {this.renderLinks()}
-        </ul>
-      </aside>
-    );
+  componentDidMount() {
+    RoomStore.on('change', ::this._roomsChanged);
+  }
+
+  componentWillUnmount() {
+    RoomStore.removeListener('change', ::this._roomsChanged);
+  }
+
+  getRooms() {
+    return RoomStore.getAllRooms();
   }
 
   renderLinks() {
@@ -26,19 +28,18 @@ class Sidebar extends Component {
     );
   }
 
-  getRooms() {
-    return RoomStore.getAllRooms();
+  render() {
+    return (
+      <aside className="large-3 columns sidebar">
+        <div className="heading">Rooms</div>
+        <ul className="side-nav">
+          {this.renderLinks()}
+        </ul>
+      </aside>
+    );
   }
 
-  componentDidMount() {
-    RoomStore.on('change', this._roomsChanged)
-  }
-
-  componentWillUnmount() {
-    RoomStore.removeListener('change', this._roomsChanged)
-  }
-
-  _roomsChanged = () => {
+  _roomsChanged() {
     this.forceUpdate();
   }
 
