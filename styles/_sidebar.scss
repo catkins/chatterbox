@@ -1,0 +1,29 @@
+$sidebar-bg: #693B69;
+
+aside.sidebar {
+  background-color: $sidebar-bg;
+
+  .heading {
+    margin: 10px 15px -5px 10px;
+    color: white;
+    font-weight: bold;
+  }
+
+  .side-nav li {
+    &:hover {
+      background-color: darken($sidebar-bg, 10%);
+      border-radius: 5px;
+    }
+
+    a {
+      color: white;
+      font-weight: light;
+
+      &:hover {
+        color: white;
+      }
+    }
+
+  }
+
+}
