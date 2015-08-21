@@ -1,5 +1,6 @@
 import React         from 'react';
 import AppDispatcher from '../dispatcher/app-dispatcher';
+import autobind      from 'autobind-decorator';
 
 const { Component, PropTypes } = React;
 
@@ -18,11 +19,11 @@ class MessageBox extends Component {
 
   render() {
     return (
-      <form onSubmit={this._sendMessage.bind(this)}>
+      <form onSubmit={this._sendMessage}>
         <div className="row collapse">
 
           <div className="small large-10 columns">
-            <input type="text" value={this.state.newMessage} onChange={this._newMessageChanged.bind(this)} />
+            <input type="text" value={this.state.newMessage} onChange={this._newMessageChanged} />
           </div>
 
           <div className="small large-2 columns">
@@ -33,10 +34,12 @@ class MessageBox extends Component {
     );
   }
 
+  @autobind
   _newMessageChanged(event) {
     this.setState({ newMessage: event.target.value });
   }
 
+  @autobind
   _sendMessage() {
     const newMessage = this.state.newMessage;
     this.setState({ newMessage: '' });

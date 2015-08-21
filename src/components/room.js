@@ -3,6 +3,7 @@ import MessageStore from '../stores/message-store';
 import UserStore    from '../stores/user-store';
 import MessageBox   from './message-box';
 import MessageList  from './message-list';
+import autobind     from 'autobind-decorator';
 
 const { Component, PropTypes } = React;
 
@@ -13,11 +14,11 @@ class Room extends Component {
   }
 
   componentDidMount() {
-    MessageStore.on('change', ::this._messagesChanged);
+    MessageStore.on('change', this._messagesChanged);
   }
 
   componentWillUnmount() {
-    MessageStore.removeListener('change', ::this._messagesChanged);
+    MessageStore.removeListener('change', this._messagesChanged);
   }
 
   render() {
@@ -33,6 +34,7 @@ class Room extends Component {
     );
   }
 
+  @autobind
   _getMessages() {
     const roomId = this.props.params.room;
 
@@ -43,6 +45,7 @@ class Room extends Component {
     });
   }
 
+  @autobind
   _messagesChanged() {
     // TODO: is there a nicer way of doing this?
     this.forceUpdate();

@@ -1,17 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router';
 import RoomStore from '../stores/room-store';
+import autobind     from 'autobind-decorator';
 
 const { Component } = React;
 
 class Sidebar extends Component {
 
   componentDidMount() {
-    RoomStore.on('change', ::this._roomsChanged);
+    RoomStore.on('change', this._roomsChanged);
   }
 
   componentWillUnmount() {
-    RoomStore.removeListener('change', ::this._roomsChanged);
+    RoomStore.removeListener('change', this._roomsChanged);
   }
 
   getRooms() {
@@ -39,6 +40,7 @@ class Sidebar extends Component {
     );
   }
 
+  @autobind
   _roomsChanged() {
     this.forceUpdate();
   }
