@@ -1,3 +1,4 @@
+/*eslint-disable */
 var gulp       = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');
 var connect    = require('gulp-connect');
@@ -93,10 +94,7 @@ function setupBrowserify(watch) {
     });
   }
 
-  bundler.transform(babelify.configure({
-    compact: false,
-    optional: ["es7.functionBind", "es7.classProperties"]
-  }));
+  bundler.transform(babelify.configure({ compact: false }));
 
   return rebundle(bundler);
 }
@@ -119,3 +117,5 @@ function rebundle(bundler) {
 function logFileUpdate(file) {
   util.log(colors.cyan('File modified:'), colors.magenta(file), '- updating', BUNDLE_FILENAME);
 }
+
+/*eslint-enable */

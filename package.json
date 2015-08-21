@@ -5,6 +5,7 @@
   "main": "index.js",
   "repository": "git@github.com:catkins/chatterbox.git",
   "dependencies": {
+    "babel": "^5.8.21",
     "express": "^4.13.1",
     "flux": "^2.1.1",
     "jquery": "^2.1.4",
