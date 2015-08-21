@@ -4,8 +4,8 @@ import { EventEmitter } from 'events';
 // dummy data for prototype
 const _rooms = [
   { name: 'general' },
-  { name: 'random'  }
-]
+  { name: 'random'  },
+];
 
 class RoomStore extends EventEmitter {
 
@@ -21,10 +21,9 @@ class RoomStore extends EventEmitter {
 
   registerWithDispatcher() {
     this.dispatchToken = AppDispatcher.register((payload) => {
-
-      switch(payload.eventName) {
-        default:
-          break;
+      switch (payload.eventName) {
+      default:
+        break;
       }
 
       return true;

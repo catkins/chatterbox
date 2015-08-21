@@ -1,4 +1,4 @@
-import AppDispatcher from '../dispatcher/app-dispatcher'
+import AppDispatcher from '../dispatcher/app-dispatcher';
 import { EventEmitter } from 'events';
 import UserStore from './user-store';
 
@@ -7,21 +7,21 @@ const _messages = {
   general: [
     {
       userId: 1,
-      text: 'Hey mate'
+      text: 'Hey mate',
     },
     {
       userId: 2,
-      text: 'Nick off!'
-    }
+      text: 'Nick off!',
+    },
   ],
 
   random: [
     {
       userId: 3,
-      text: 'Oi paloi'
-    }
-  ]
-}
+      text: 'Oi paloi',
+    },
+  ],
+};
 
 class MessageStore extends EventEmitter {
 
@@ -37,16 +37,15 @@ class MessageStore extends EventEmitter {
 
   registerWithDispatcher() {
     this.dispatchToken = AppDispatcher.register((payload) => {
+      switch (payload.eventName) {
+      case 'create-message':
+        const { room, text } = payload.data;
+        const userId = UserStore.getCurrentUser().id;
+        this.createMessage(room, text, userId);
+        break;
 
-      switch(payload.eventName) {
-        case 'create-message':
-          let { room, text } = payload.data;
-          let userId = UserStore.getCurrentUser().id;
-          this.createMessage(room, text, userId);
-          break;
-
-        default:
-          break;
+      default:
+        break;
       }
 
       return true;
@@ -58,7 +57,7 @@ class MessageStore extends EventEmitter {
 
     this.messages[room].push({
       userId: userId,
-      text:   text
+      text: text,
     });
 
     this.emit('change');

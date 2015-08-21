@@ -3,7 +3,7 @@ import MessageStore  from '../stores/message-store';
 import UserStore     from '../stores/user-store';
 import AppDispatcher from '../dispatcher/app-dispatcher';
 
-const { Component } = React
+const { Component } = React;
 
 class Room extends Component {
 
@@ -13,11 +13,11 @@ class Room extends Component {
   }
 
   componentDidMount() {
-    MessageStore.on('change', this._messagesChanged)
+    MessageStore.on('change', ::this._messagesChanged);
   }
 
   componentWillUnmount() {
-    MessageStore.removeListener('change', this._messagesChanged)
+    MessageStore.removeListener('change', ::this._messagesChanged);
   }
 
   render() {
@@ -40,7 +40,7 @@ class Room extends Component {
   _renderMessages() {
     const roomId = this.props.params.room;
 
-    let messages = MessageStore.getMessagesForRoom(roomId);
+    const messages = MessageStore.getMessagesForRoom(roomId);
 
     return messages.map((msg, index) => this._renderMessage(msg, index));
   }
