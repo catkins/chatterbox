@@ -1,6 +1,8 @@
 import AppDispatcher from '../dispatcher/app-dispatcher';
 import { EventEmitter } from 'events';
 import UserStore from './user-store';
+import Immutable from 'immutable';
+const { Map, List } = Immutable;
 
 // dummy data for prototype
 const _messages = {
@@ -27,12 +29,12 @@ class MessageStore extends EventEmitter {
 
   constructor(messages) {
     super();
-    this.messages = messages;
+    this.messages = Immutable.fromJS(messages);
     this.registerWithDispatcher();
   }
 
   getMessagesForRoom(roomName) {
-    return this.messages[roomName] || [];
+    return this.messages.get(roomName) || new List();
   }
 
   registerWithDispatcher() {
@@ -52,13 +54,12 @@ class MessageStore extends EventEmitter {
     });
   }
 
-  createMessage(room, text, userId) {
-    this.messages[room] = this.messages[room] || [];
+  createMessage(roomName, text, userId) {
+    const previousMessagesForRoom = this.getMessagesForRoom(roomName);
+    const newMessage = new Map({ userId: userId, text: text });
+    const newMessagesForRoom = previousMessagesForRoom.push(newMessage);
 
-    this.messages[room].push({
-      userId: userId,
-      text: text,
-    });
+    this.messages = this.messages.set(roomName, newMessagesForRoom);
 
     this.emit('change');
   }

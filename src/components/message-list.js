@@ -1,11 +1,17 @@
-import React from 'react';
+import React    from 'react/addons';
+import { List } from 'immutable';
+import shallowEqual from 'react/lib/shallowEqual';
 
 const { Component, PropTypes } = React;
 
 class MessageList extends Component {
 
   static propTypes = {
-    messages: PropTypes.array,
+    messages: PropTypes.instanceOf(List),
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return ! (shallowEqual(this.props, nextProps) && shallowEqual(this.state, nextState));
   }
 
   render() {
@@ -17,7 +23,7 @@ class MessageList extends Component {
   }
 
   _renderMessage(message, index) {
-    return <li key={index}>{message.handle}: {message.text}</li>;
+    return <li key={index}>{message.get('handle')}: {message.get('text')}</li>;
   }
 }
 

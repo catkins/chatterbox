@@ -4,6 +4,7 @@ import UserStore    from '../stores/user-store';
 import MessageBox   from './message-box';
 import MessageList  from './message-list';
 import autobind     from 'autobind-decorator';
+import { Map }      from 'immutable';
 
 const { Component, PropTypes } = React;
 
@@ -26,7 +27,7 @@ class Room extends Component {
 
     return (
       <div className="room">
-        <h4>{messages.length} message{messages.length === 1 ? '' : 's' }</h4>
+        <h4>{messages.size} message{messages.size === 1 ? '' : 's' }</h4>
 
         <MessageList messages={messages} />
         <MessageBox roomName={this.props.params.room} />
@@ -39,9 +40,9 @@ class Room extends Component {
     const roomId = this.props.params.room;
 
     return MessageStore.getMessagesForRoom(roomId).map((msg) => {
-      const user = UserStore.findById(msg.userId);
+      const user = UserStore.findById(msg.get('userId'));
 
-      return { text: msg.text, handle: `@${user.handle}` };
+      return new Map({ text: msg.get('text'), handle: `@${user.handle}` });
     });
   }
 
